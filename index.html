@@ -1,53 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Art Gallery</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <body>
-        <section id="navbar">
-            <nav>
-                <a href="#images">Images</a>
-                <a href="#contact">Contact</a>
-                <a href="#about">About Us</a>
-            </nav>
-        </section>
+<body>
+    <header id="navbar">
+        <nav class="navitems">
+            <a href="#gallery">Gallery</a>
+            <a href="#contact">Contact</a>
+            <a href="#about">About</a>
+        </nav>
+    </header>
 
-        <section id="header">
+    <main>
+        <section id="hero">
             <h1>Ali Aan's Gallery</h1>
+            <p class="tagline">Discover Beautiful Art</p>
         </section>
 
-        <section id="images">
-            <img src="images/1.jpg" alt="Art 1" width="300">
-            <img src="images/2.jpg" alt="Art 2" width="300">
-            <img src="images/3.jpg" alt="Art 3" width="300">
-            <img src="images/4.jpg" alt="Art 4" width="300">
-            <img src="images/5.jpg" alt="Art 5" width="300">
-            <img src="images/7.jpg" alt="Art 7" width="300">
-            <img src="images/8.jpg" alt="Art 8" width="300">
-            <img src="images/9.jpg" alt="Art 9" width="300">
-            <img src="images/10.jpg" alt="Art 10" width="300">
+        <section id="gallery">
+            <h2>Our Collection</h2>
+            <div class="gallery-grid">
+                <img src="images/1.jpg" alt="Art 1">
+                <img src="images/2.jpg" alt="Art 2">
+                <img src="images/3.jpg" alt="Art 3">
+                <img src="images/4.jpg" alt="Art 4">
+                <img src="images/5.jpg" alt="Art 5">
+                <img src="images/7.jpg" alt="Art 7">
+                <img src="images/8.jpg" alt="Art 8">
+                <img src="images/9.jpg" alt="Art 9">
+                <img src="images/10.jpg" alt="Art 10">
+            </div>
         </section>
+
         <section id="contact">
-            <form>
-                <label for="name">Name:</label><br>
-                <input type="text" id="name" name="name"><br>
-                <label for="email">Email:</label><br>
-                <input type="email" id="email" name="email"><br>
-                <input type="submit" value="Submit">
+            <form class="contactform">
+                <h2>Contact Us</h2>
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Your name">
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Your email">
+                </div>
+                <button type="submit">Submit</button>
             </form>
         </section>
+
         <section id="about">
             <h2>About Us</h2>
-            <p>Welcome to our Art Gallery! We showcase a diverse collection of artwork from talented artists around the
-                world. Our mission is to inspire and connect people through the power of art.</p>
+            <p>Welcome to our Art Gallery! We showcase a diverse collection of artwork from talented artists around the world. Our mission is to inspire and connect people through the power of art.</p>
         </section>
+    </main>
 
+    <footer>
+        <p>&copy; 2026 Ali Aan's Gallery. All rights reserved.</p>
+    </footer>
 
-
-    </body>
+</body>
 
 </html>
