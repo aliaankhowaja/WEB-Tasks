@@ -1,6 +1,0 @@
-create a html file for a single page art gallery. 
-you can only use inline css. the art gallery should contain the following sections: navbar, welcome text, images, contact and about us. 
-the welcome section should contain the text "Ali Aan's Gallery". 
-there are 10 images in the images folder with name n.jpg (n is from 1 to 10). 
-the contact us section should be a form. only design the page. 
-the only functional thing should be nav bar links. 
