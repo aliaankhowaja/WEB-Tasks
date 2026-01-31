@@ -1,0 +1,6 @@
+a9a6e41,aliaankhowaja,45 seconds ago,feat: add pdf and word file for report (prompt + analysis)
+51e2ac4,aliaankhowaja,4 hours ago,feat: restructure HTML layout and add CSS styles for improved design
+717b2fe,Ali Aan Khowaja,3 days ago,feat: add prompt for the ai agent web page
+af9af36,Ali Aan Khowaja,3 days ago,first commit
+
+Github repo: https://github.com/aliaankhowaja/Art-Gallery
