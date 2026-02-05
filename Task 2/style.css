@@ -19,7 +19,6 @@ body {
   height: 90vh;
   overflow: hidden;
 }
-/* Bow */
 #bow {
   position: absolute;
   left: 20px;
@@ -27,10 +26,9 @@ body {
   font-size: 50px;
   transform-origin: left center;
   transform: translateY(-50%);
-  transition: transform 0.06s linear;
+  transition: transform 0.05s linear;
   width: 200px;
 }
-/* Arrow */
 #arrow {
   position: absolute;
   left: 80px;
@@ -40,10 +38,10 @@ body {
   background: brown;
   display: none;
   transform-origin: left center;
-  z-index: 2;
+
   pointer-events: none;
 }
-/* Target */
+
 #target {
   position: absolute;
   right: 50px;
@@ -52,4 +50,35 @@ body {
   height: 60px;
   border-radius: 50%;
   background: red;
+}
+
+#controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 5;
+}
+
+#controls button {
+  padding: 8px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#controls button:hover {
+  opacity: 0.95;
+}
+
+#timer {
+  background: white;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-weight: bold;
 }

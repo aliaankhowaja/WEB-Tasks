@@ -5,6 +5,10 @@ const bow = document.getElementById("bow");
 let score = 0;
 let arrowMoving = false;
 let targetDirection = 1;
+let gameRunning = false;
+let timeLeft = 30;
+let timerInterval = null;
+let targetInterval = null;
 
 let screenWidth = window.innerWidth;
 let screenHeight = window.innerHeight;
@@ -13,14 +17,52 @@ let screenHeight = window.innerHeight;
 // let bowWidth = Math.sqrt(bow.clientWidth ** 2 + bow.clientHeight ** 2); 
 // let bowHeight = bowWidth
 
-/* Move target continuously */
-setInterval(() => {
-  let top = target.offsetTop;
-  if (top <= 0 || top >= window.innerHeight - 120) {
-    targetDirection *= -1;
+function startTargetMovement() {
+  if (targetInterval) return;
+  targetInterval = setInterval(() => {
+    let top = target.offsetTop;
+    if (top <= 0 || top >= window.innerHeight - 120) {
+      targetDirection *= -1;
+    }
+    target.style.top = top + (5 * targetDirection) + "px";
+  }, 50);
+}
+
+function stopTargetMovement() {
+  if (targetInterval) {
+    clearInterval(targetInterval);
+    targetInterval = null;
   }
-  target.style.top = top + (5 * targetDirection) + "px";
-}, 50);
+}
+
+function startGame() {
+  if (gameRunning) return;
+  gameRunning = true;
+  score = 0;
+  scoreDisplay.textContent = "Score: " + score;
+  timeLeft = 30;
+  const timerEl = document.getElementById("timer");
+  if (timerEl) timerEl.textContent = "Time: " + timeLeft;
+  startTargetMovement();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    if (timerEl) timerEl.textContent = "Time: " + timeLeft;
+    if (timeLeft <= 0) {
+      stopGame();
+    }
+  }, 1000);
+}
+
+function stopGame() {
+  if (!gameRunning) return;
+  gameRunning = false;
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  stopTargetMovement();
+  resetArrow();
+}
 let rotationAngle = 0;
 let launchAngle = 0;
 document.addEventListener("mousemove", (e) => {
@@ -36,7 +78,9 @@ document.addEventListener("mousemove", (e) => {
   bow.style.transform = `translateY(-50%) rotate(${rotationAngle}rad)`;
 });
 
-document.addEventListener("click", () => {
+document.addEventListener("click", (e) => {
+  if (!gameRunning) return;
+  if (e.target && e.target.closest && e.target.closest('#controls')) return;
   if (arrowMoving) return;
   launchAngle = rotationAngle;
   arrowMoving = true;
