@@ -1,0 +1,11 @@
+*   1a49f80fa21c5aef9ad44d06f66df3fd4e9d8c2d Merge pull request #1 from aliaankhowaja/Task-2
+|\  
+| * 65285f1304f715f9aaec18d979f656ed6792a2cd feat: implement game controls and timer functionality
+| * c83a70d8ddb5c9d3e78e22f23f20bcd3b15c83f9 feat: add initial game logic.
+|/  
+* ae0664de3e0f1734c1e5ce1a43c8da91aef546bc refactor: move task 1 to task 1 folder
+* 6da45014b578fb4618c79a7a19037b35e743a7d4 feat: create commits log with repo info
+* a9a6e414b23430cf241ac9b18dd97c248691ef99 feat: add pdf and word file for report (prompt + analysis)
+* 51e2ac41663be1bf0910a7fc6453104cbf243330 feat: restructure HTML layout and add CSS styles for improved design
+* 717b2feac5bf877fca739c368fc823ccdf4c489a feat: add prompt for the ai agent web page
+* af9af36da6597b1f7cf13942123117491766c9f9 first commit

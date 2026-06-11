@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Archery Game</title>
+	<style>
+		html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#e6f2ff}
+		.container{display:flex;align-items:center;justify-content:center;height:100%;gap:20px;padding:20px}
+		.game-area{position:relative;background:linear-gradient(#bfe9ff,#ffffff);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);}
+		canvas{display:block;border-radius:6px;background:transparent}
+		.hud{position:absolute;left:12px;top:12px;color:#03396c;font-weight:bold}
+		.hud .line{margin-bottom:6px}
+		.controls{position:absolute;right:12px;top:12px;display:flex;gap:8px;align-items:center}
+		button{background:#0077cc;color:#fff;border:0;padding:8px 12px;border-radius:6px;cursor:pointer}
+		button:disabled{opacity:.5;cursor:default}
+		.note{font-size:13px;color:#034f84;margin-left:12px}
+		@media (max-width:700px){.container{padding:8px}}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="game-area" id="gameWrap" style="width:900px;height:520px;">
+			<div class="hud">
+				<div class="line">Score: <span id="score">0</span></div>
+				<div class="line">Time: <span id="time">30.0</span>s</div>
+			</div>
+			<div class="controls">
+				<button id="startBtn">Start (30s)</button>
+				<div class="note">Click or press <strong>Space</strong> to shoot. Move mouse to aim.</div>
+			</div>
+			<canvas id="gameCanvas" width="900" height="520"></canvas>
+		</div>
+	</div>
+
+	<script>
+	// Archery game in single file, vanilla JS
+	const canvas = document.getElementById('gameCanvas');
+	const ctx = canvas.getContext('2d');
+	const startBtn = document.getElementById('startBtn');
+	const scoreEl = document.getElementById('score');
+	const timeEl = document.getElementById('time');
+
+	const BOW_IMG_SRC = 'bow.png'; // ensure bow.png exists next to this file
+
+	let bowImg = new Image();
+	bowImg.src = BOW_IMG_SRC;
+	let running = false;
+	let score = 0;
+	let timeLeft = 30.0;
+	let arrows = [];
+	let target = null;
+	let lastTime = null;
+	let mouseY = canvas.height/2;
+
+	const bow = {
+		x: 40,
+		y: canvas.height/2,
+		w: 80,
+		h: 120
+	};
+
+	function resetGame(){
+		score = 0;
+		timeLeft = 30.0;
+		arrows = [];
+		target = createTarget();
+		scoreEl.textContent = score;
+		timeEl.textContent = timeLeft.toFixed(1);
+	}
+
+	function createTarget(){
+		return {
+			x: canvas.width - 100,
+			y: canvas.height/2,
+			r: 36,
+			phase: Math.random()*Math.PI*2,
+			speed: 1 + Math.random()*1.4,
+			amplitude: 120 + Math.random()*80
+		};
+	}
+
+	function spawnArrow(angle){
+		const speed = 700; // px/s
+		const vx = Math.cos(angle)*speed;
+		const vy = Math.sin(angle)*speed;
+		const startX = bow.x + bow.w - 12;
+		const startY = bow.y;
+		arrows.push({x:startX,y:startY,vx,vy,life:3});
+	}
+
+	function update(dt){
+		if(!running) return;
+		// update target (sinusoidal)
+		target.phase += dt * target.speed;
+		target.y = canvas.height/2 + Math.sin(target.phase) * target.amplitude;
+
+		// update arrows
+		for(let i=arrows.length-1;i>=0;i--){
+			const a = arrows[i];
+			a.x += a.vx * dt;
+			a.y += a.vy * dt;
+			a.vy += 0 * dt; // no gravity for simplicity
+			a.life -= dt;
+			// remove when off-screen or expired
+			if(a.x > canvas.width + 50 || a.y < -50 || a.y > canvas.height + 50 || a.life <= 0) arrows.splice(i,1);
+		}
+
+		// collisions
+		for(let i=arrows.length-1;i>=0;i--){
+			const a = arrows[i];
+			const dx = a.x - target.x;
+			const dy = a.y - target.y;
+			if(Math.sqrt(dx*dx+dy*dy) < target.r){
+				arrows.splice(i,1);
+				score += 1;
+				scoreEl.textContent = score;
+				// optionally make target react
+				target.phase += Math.PI/3;
+			}
+		}
+
+		// timer
+		timeLeft -= dt;
+		if(timeLeft <= 0){
+			timeLeft = 0;
+			running = false;
+			startBtn.disabled = false;
+			startBtn.textContent = 'Start (30s)';
+		}
+		timeEl.textContent = timeLeft.toFixed(1);
+	}
+
+	function draw(){
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+
+		// background simple ground
+		ctx.fillStyle = '#dff3e6';
+		ctx.fillRect(0, canvas.height - 80, canvas.width, 80);
+
+		// draw bow image (centered vertically at bow.y)
+		const bw = bow.w;
+		const bh = bow.h;
+		if(bowImg.complete && bowImg.naturalWidth){
+			ctx.drawImage(bowImg, bow.x - 10, bow.y - bh/2, bw, bh);
+		} else {
+			ctx.fillStyle = '#6b3';
+			ctx.fillRect(bow.x, bow.y - 30, 30, 60);
+		}
+
+		// draw arrows
+		ctx.strokeStyle = '#333';
+		ctx.fillStyle = '#333';
+		arrows.forEach(a=>{
+			ctx.save();
+			const angle = Math.atan2(a.vy, a.vx);
+			ctx.translate(a.x, a.y);
+			ctx.rotate(angle);
+			ctx.beginPath();
+			ctx.moveTo(-12,0);
+			ctx.lineTo(12,0);
+			ctx.lineWidth = 3;
+			ctx.stroke();
+			// arrow head
+			ctx.beginPath();
+			ctx.moveTo(12,0);
+			ctx.lineTo(8,-4);
+			ctx.lineTo(8,4);
+			ctx.closePath();
+			ctx.fill();
+			ctx.restore();
+		});
+
+		// draw target (concentric circles)
+		const t = target;
+		const tx = t.x, ty = t.y;
+		// shadow
+		ctx.beginPath(); ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.ellipse(tx+6,ty+6, t.r+10, t.r+6,0,0,Math.PI*2); ctx.fill();
+		// rings
+		const colors = ['#fff','#d62828','#ffffff','#f77f00','#ffffff','#003049'];
+		for(let i=0;i<6;i++){
+			ctx.beginPath();
+			const rr = t.r * (1 - i*0.14);
+			ctx.fillStyle = colors[i%colors.length];
+			ctx.arc(tx,ty,rr,0,Math.PI*2);
+			ctx.fill();
+		}
+
+		// center dot
+		ctx.beginPath(); ctx.fillStyle='#ffd100'; ctx.arc(tx,ty,6,0,Math.PI*2); ctx.fill();
+
+		// crosshair at mouse (aim)
+		ctx.beginPath(); ctx.strokeStyle='rgba(0,0,0,0.12)'; ctx.setLineDash([4,4]); ctx.moveTo(mouseY,0); ctx.lineTo(mouseY,canvas.height); ctx.stroke(); ctx.setLineDash([]);
+	}
+
+	function loop(ts){
+		if(!lastTime) lastTime = ts;
+		const dt = Math.min(0.05,(ts - lastTime)/1000);
+		lastTime = ts;
+		update(dt);
+		draw();
+		requestAnimationFrame(loop);
+	}
+
+	// Input handling
+	canvas.addEventListener('mousemove', e=>{
+		const rect = canvas.getBoundingClientRect();
+		mouseY = e.clientY - rect.top;
+		// update bow aim vertically
+		bow.y = mouseY;
+	});
+
+	function shootAtPointer(){
+		if(!running) return;
+		// aim from bow center to mouse position
+		const rect = canvas.getBoundingClientRect();
+		const mx = (event && event.clientX) ? event.clientX - rect.left : (bow.x + 200);
+		const my = mouseY;
+		const dx = mx - (bow.x + bow.w/2);
+		const dy = my - bow.y;
+		const angle = Math.atan2(dy, dx);
+		spawnArrow(angle);
+	}
+
+	window.addEventListener('click', (e)=>{ shootAtPointer(); });
+	window.addEventListener('keydown', (e)=>{
+		if(e.code === 'Space'){
+			e.preventDefault();
+			shootAtPointer();
+		}
+	});
+
+	startBtn.addEventListener('click', ()=>{
+		resetGame();
+		running = true;
+		startBtn.disabled = true;
+		startBtn.textContent = 'Running...';
+	});
+
+	// initial setup
+	resetGame();
+	requestAnimationFrame(loop);
+	</script>
+</body>
+</html>
+

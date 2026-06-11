@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>TODO List</title>
+    <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+</head>
+<body>
+    <div class="window">
+        <h1>
+            TODO List
+        </h1>
+        <div class="canvas">
+
+            <div class="input">
+                <input type="text" placeholder="Enter a task">
+                <button id="add">Add</button>
+            </div>
+            <div id="list"></div>
+        </div>
+
+    </div>
+    <script >
+        function addTask(){
+            let task = $('.input input').val()
+            $('#list').append(`<div class="task">${task}</div>`)
+            $('.input input').val('')
+        }
+        $('#add').click(
+            addTask
+        )
+    </script>
+
+</body>
+</html>
